@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "VA-CorporateJoin-IAC", "Virgin-Active-OnlineJoin-IAC\VA-CorporateJoin-IAC.deployproj", "{61D808FC-ECC4-4296-9FB2-43474A823272}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{61D808FC-ECC4-4296-9FB2-43474A823272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61D808FC-ECC4-4296-9FB2-43474A823272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61D808FC-ECC4-4296-9FB2-43474A823272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61D808FC-ECC4-4296-9FB2-43474A823272}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FC88F3A0-AC59-446D-A9E1-6BE75EE9359F}
+	EndGlobalSection
+EndGlobal

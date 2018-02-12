@@ -1,0 +1,332 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "2018.02.08.001",
+  "parameters": {
+    "EnvName": {
+      "type": "string",
+      "allowedValues": [
+        "DEV",
+        "UAT",
+        "PRD"
+      ],
+      "metadata": {
+        "description": "The enviroment name must only be DEV, UAT or PRD"
+      }
+    },
+    "AppName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Application to be deployed (No Spaces Allowed, please use (-) inplace of a space."
+      }
+    },
+    "AppReleaseId": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "The release version number"
+      }
+    },
+    "ASPSkuName": {
+      "type": "string",
+      "allowedValues": [
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "Describes plan's pricing tier and capacity. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+      }
+    },
+    "NewRelicLicenseKey": {
+      "type": "string",
+      "metadata": {
+        "description": "Enter the NewRelic license key."
+      }
+    }
+  },
+  "variables": {
+    "ASPName": "[concat(parameters('EnvName'),'-',parameters('AppName'),'-ASP')]",
+    "AppWSName": "[concat(parameters('EnvName'),'-',parameters('AppName'),'-APPWS')]",
+    "AutoScaleName": "[concat(parameters('EnvName'),'-',parameters('AppName'),'-AS')]",
+    "AzureDNSName": "[ concat(parameters('EnvName'),parameters('AppName'),'.azurewebsites.net')]",
+    "CustomURL": "[ concat(parameters('EnvName'),parameters('AppName'),'.lab-bjss.com')]"
+  },
+  "resources": [
+    {
+      "type": "microsoft.insights/autoscalesettings",
+      "name": "[variables('AutoScaleName')]",
+      "apiVersion": "2014-04-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "Name": "[variables('AutoScaleName')]",
+        "Enviroment": "[parameters('EnvName')]",
+        "Application": "[parameters('AppName')]",
+        "ReleaseNumber": "[parameters('AppReleaseId')]"
+      },
+      "properties": {
+        "profiles": [
+          {
+            "name": "[variables('AutoScaleName')]",
+            "capacity": {
+              "minimum": "2",
+              "maximum": "4",
+              "default": "2"
+            },
+            "rules": [
+              {
+                "metricTrigger": {
+                  "metricName": "CpuPercentage",
+                  "metricNamespace": "",
+                  "metricResourceUri": "[resourceId('Microsoft.Web/serverfarms', variables('ASPName'))]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT10M",
+                  "timeAggregation": "Average",
+                  "operator": "GreaterThan",
+                  "threshold": 70
+                },
+                "scaleAction": {
+                  "direction": "Increase",
+                  "type": "ChangeCount",
+                  "value": "1",
+                  "cooldown": "PT5M"
+                }
+              },
+              {
+                "metricTrigger": {
+                  "metricName": "MemoryPercentage",
+                  "metricNamespace": "",
+                  "metricResourceUri": "[resourceId('Microsoft.Web/serverfarms', variables('ASPName'))]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT10M",
+                  "timeAggregation": "Average",
+                  "operator": "GreaterThan",
+                  "threshold": 70
+                },
+                "scaleAction": {
+                  "direction": "Increase",
+                  "type": "ChangeCount",
+                  "value": "1",
+                  "cooldown": "PT5M"
+                }
+              }
+            ]
+          }
+        ],
+        "enabled": true,
+        "name": "[variables('AutoScaleName')]",
+        "targetResourceUri": "[resourceId('Microsoft.Web/serverfarms', variables('ASPName'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('ASPName'))]"
+      ]
+    },
+    {
+      "name": "[variables('ASPName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "sku": {
+        "name": "[parameters('ASPSkuName')]"
+      },
+      "dependsOn": [],
+      "tags": {
+        "Name": "[variables('ASPName')]",
+        "Enviroment": "[parameters('EnvName')]",
+        "Application": "[parameters('AppName')]",
+        "ReleaseNumber": "[parameters('AppReleaseId')]"
+      },
+      "properties": {
+        "name": "[variables('ASPName')]",
+        "numberOfWorkers": 1
+      }
+    },
+    {
+      "name": "[variables('AppWSName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('ASPName'))]"
+      ],
+      "tags": {
+        "Name": "[variables('AppWSName')]",
+        "Enviroment": "[parameters('EnvName')]",
+        "Application": "[parameters('AppName')]",
+        "ReleaseNumber": "[parameters('AppReleaseId')]"
+      },
+      "properties": {
+        "name": "[variables('AppWSName')]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('ASPName'))]",
+        "clientAffinityEnabled": false
+      },
+      "resources": [
+        {
+          "name": "appsettings",
+          "type": "config",
+          "apiVersion": "2015-08-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('AppWSName'))]"
+          ],
+          "tags": {
+            "Name": "appsettings"
+          },
+          "properties": {
+            "COR_ENABLE_PROFILING": "1",
+            "COR_PROFILER": "{71DA0A04-7777-4EC6-9643-7D28B46A8A41}",
+            "COR_PROFILER_PATH": "D:\\Home\\site\\wwwroot\\newrelic\\NewRelic.Profiler.dll",
+            "NEWRELIC_HOME": "D:\\Home\\site\\wwwroot\\newrelic",
+            "NEW_RELIC_LICENSE_KEY": "[parameters('NewRelicLicenseKey')]"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "name": "[concat(variables('AppWSName'), '/Web')]",
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "defaultDocuments": [
+          "Default.html",
+          "index.html",
+          "hostingstart.html"
+        ],
+        "netFrameworkVersion": "v4.6",
+        "phpVersion": "",
+        "pythonVersion": "",
+        "nodeVersion": "",
+        "remoteDebuggingEnabled": false,
+        "use32BitWorkerProcess": false,
+        "webSocketsEnabled": false,
+        "alwaysOn": false,
+        "virtualApplications": [
+          {
+            "virtualPath": "/",
+            "physicalPath": "site\\wwwroot\\httpdocs\\",
+            "preloadEnabled": false,
+            "virtualDirectories": null
+          }
+        ],
+        "managedPipelineMode": "Integrated"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('AppWSName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "name": "[concat( variables('AppWSName'),'/', variables('CustomURL'))]",
+      "apiVersion": "2016-08-01",
+      "properties": {
+        "siteName": "[variables('AppWSName')]",
+        "azureResourceName": "[variables('AppWSName')]",
+        "azureResourceType": "Website",
+        "customHostNameDnsRecordType": "CName",
+        "hostNameType": "Managed"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('AppWSName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/slots",
+      "name": "[concat(variables('AppWSName'), '/Staging')]",
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "enabled": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('ASPName'))]",
+        "clientAffinityEnabled": false
+      },
+      "resources": [
+        {
+          "name": "appsettings",
+          "type": "config",
+          "apiVersion": "2015-08-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/slots', variables('AppWSName'), 'Staging')]"
+          ],
+          "tags": {
+            "Name": "appsettings"
+          },
+          "properties": {
+            "COR_ENABLE_PROFILING": "1",
+            "COR_PROFILER": "{71DA0A04-7777-4EC6-9643-7D28B46A8A41}",
+            "COR_PROFILER_PATH": "D:\\Home\\site\\wwwroot\\newrelic\\NewRelic.Profiler.dll",
+            "NEWRELIC_HOME": "D:\\Home\\site\\wwwroot\\newrelic",
+            "NEW_RELIC_LICENSE_KEY": "[parameters('NewRelicLicenseKey')]"
+          }
+        }
+      ],
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('AppWSName'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('ASPName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/slots/config",
+      "name": "[concat(variables('AppWSName'), '/', 'staging', '/' , 'web')]",
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "defaultDocuments": [
+          "Default.html",
+          "index.html",
+          "hostingstart.html"
+        ],
+        "netFrameworkVersion": "v4.6",
+        "phpVersion": "",
+        "pythonVersion": "",
+        "nodeVersion": "",
+        "remoteDebuggingEnabled": false,
+        "use32BitWorkerProcess": false,
+        "webSocketsEnabled": false,
+        "alwaysOn": false,
+        "virtualApplications": [
+          {
+            "virtualPath": "/",
+            "physicalPath": "site\\wwwroot\\httpdocs\\",
+            "preloadEnabled": false,
+          }
+        ],
+        "managedPipelineMode": "Integrated"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('AppWSName'))]",
+        "[resourceId('Microsoft.Web/sites/slots', variables('AppWSName'), 'Staging')]"
+      ]
+    }
+  ],
+  "outputs": {
+    "CustomProdUrl": {
+      "type": "string",
+      "value": "[concat( variables('CustomURL'), '.lab-bjss.com')]"
+    },
+    "ProdUrl": {
+      "type": "string",
+      "value": "[concat( variables('AppWSName'), '.azurewebsites.net')]"
+    },
+    "StagingUrl": {
+      "type": "string",
+      "value": "[concat( variables('AppWSName'),'-staging.azurewebsites.net')]"
+    },
+    "ASPName": {
+      "type": "string",
+      "value": "[variables('ASPName')]"
+    },
+    "AppWSName": {
+      "type": "string",
+      "value": "[ variables('AppWSName')]"
+    },
+    "StagingSlotAppWSName": {
+      "type": "string",
+      "value": "[concat(variables('AppWSName'), '/Staging')]"
+    }
+  }
+} 

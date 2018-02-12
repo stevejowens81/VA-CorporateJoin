@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "2018.02.09.001",
+  "parameters": {
+    "EnvName": {
+      "value": "DEV"
+    },
+    "AppName": {
+      "value": "APP1"
+    },
+    "AppReleaseId": {
+      "value": "R01"
+    },
+    "ASPSkuName": {
+      "value": "S1"
+    },
+    "NewRelicLicenseKey": {
+      "value": "0123456789"
+    }
+  }
+}
