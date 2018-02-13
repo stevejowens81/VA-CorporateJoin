@@ -167,22 +167,33 @@
       },
       "resources": [
         {
-          "name": "appsettings",
-          "type": "config",
+          "apiVersion": "2015-08-01",
+          "name": "NewRelic.Azure.WebSites",
+          "type": "siteextensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('AppWSName'))]"
+          ],
+          "properties": {
+          }
+        },
+        {
           "apiVersion": "2015-08-01",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('AppWSName'))]"
+            "[resourceId('Microsoft.Web/sites', variables('AppWSName'))]",
+            "NewRelic.Azure.WebSites"
           ],
-          "tags": {
-            "Name": "appsettings"
-          },
+          "name": "appsettings",
           "properties": {
             "COR_ENABLE_PROFILING": "1",
             "COR_PROFILER": "{71DA0A04-7777-4EC6-9643-7D28B46A8A41}",
             "COR_PROFILER_PATH": "D:\\Home\\site\\wwwroot\\newrelic\\NewRelic.Profiler.dll",
             "NEWRELIC_HOME": "D:\\Home\\site\\wwwroot\\newrelic",
             "NEW_RELIC_LICENSE_KEY": "[parameters('NewRelicLicenseKey')]"
-          }
+          },
+          "tags": {
+            "Name": "appsettings"
+          },
+          "type": "config"
         }
       ]
     },
@@ -246,11 +257,22 @@
       },
       "resources": [
         {
+          "apiVersion": "2015-08-01",
+          "name": "NewRelic.Azure.WebSites",
+          "type": "siteextensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/slots', variables('AppWSName'), 'Staging')]"
+          ],
+          "properties": {
+          }
+        },
+        {
           "name": "appsettings",
           "type": "config",
           "apiVersion": "2015-08-01",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/slots', variables('AppWSName'), 'Staging')]"
+            "[resourceId('Microsoft.Web/sites/slots', variables('AppWSName'), 'Staging')]",
+            "NewRelic.Azure.WebSites"
           ],
           "tags": {
             "Name": "appsettings"
@@ -292,7 +314,7 @@
           {
             "virtualPath": "/",
             "physicalPath": "site\\wwwroot\\httpdocs\\",
-            "preloadEnabled": false,
+            "preloadEnabled": false
           }
         ],
         "managedPipelineMode": "Integrated"
