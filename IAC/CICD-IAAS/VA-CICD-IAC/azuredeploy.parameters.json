@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "2018.02.14.001",
+  "parameters": {
+    "EnvName": {
+      "value": "MAN"
+    },
+    "AppName": {
+      "value": "APP1"
+    },
+    "adminUsername": {
+      "value": "localadmin"
+    },
+    "NewRelicLicenseKey": {
+      "value": "0123456789"
+    }
+  }
+}

@@ -23,7 +23,7 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "The release version number"
+        "description": "The release version number - Rxxx"
       }
     },
     "ASPSkuName": {
@@ -246,109 +246,109 @@
       ]
     },
     {
-      "type": "Microsoft.Web/sites/slots",
-      "name": "[concat(variables('AppWSName'), '/Staging')]",
-      "apiVersion": "2016-08-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "enabled": true,
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('ASPName'))]",
-        "clientAffinityEnabled": false
-      },
-      "resources": [
-        {
-          "apiVersion": "2015-08-01",
-          "name": "NewRelic.Azure.WebSites",
-          "type": "siteextensions",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/slots', variables('AppWSName'), 'Staging')]"
-          ],
-          "properties": {
-          }
-        },
-        {
-          "name": "appsettings",
-          "type": "config",
-          "apiVersion": "2015-08-01",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites/slots', variables('AppWSName'), 'Staging')]",
-            "NewRelic.Azure.WebSites"
-          ],
-          "tags": {
-            "Name": "appsettings"
-          },
-          "properties": {
-            "COR_ENABLE_PROFILING": "1",
-            "COR_PROFILER": "{71DA0A04-7777-4EC6-9643-7D28B46A8A41}",
-            "COR_PROFILER_PATH": "D:\\Home\\site\\wwwroot\\newrelic\\NewRelic.Profiler.dll",
-            "NEWRELIC_HOME": "D:\\Home\\site\\wwwroot\\newrelic",
-            "NEW_RELIC_LICENSE_KEY": "[parameters('NewRelicLicenseKey')]"
-          }
-        }
-      ],
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('AppWSName'))]",
-        "[resourceId('Microsoft.Web/serverfarms', variables('ASPName'))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Web/sites/slots/config",
-      "name": "[concat(variables('AppWSName'), '/', 'staging', '/' , 'web')]",
-      "apiVersion": "2016-08-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "defaultDocuments": [
-          "Default.html",
-          "index.html",
-          "hostingstart.html"
-        ],
-        "netFrameworkVersion": "v4.6",
-        "phpVersion": "",
-        "pythonVersion": "",
-        "nodeVersion": "",
-        "remoteDebuggingEnabled": false,
-        "use32BitWorkerProcess": false,
-        "webSocketsEnabled": false,
-        "alwaysOn": false,
-        "virtualApplications": [
-          {
-            "virtualPath": "/",
-            "physicalPath": "site\\wwwroot\\httpdocs\\",
-            "preloadEnabled": false
-          }
-        ],
-        "managedPipelineMode": "Integrated"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('AppWSName'))]",
-        "[resourceId('Microsoft.Web/sites/slots', variables('AppWSName'), 'Staging')]"
-      ]
-    }
+              "type": "Microsoft.Web/sites/slots",
+              "name": "[concat(variables('AppWSName'), '/Staging')]",
+              "apiVersion": "2016-08-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "enabled": true,
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('ASPName'))]",
+                "clientAffinityEnabled": false
+              },
+              "resources": [
+                {
+                  "apiVersion": "2015-08-01",
+                  "name": "NewRelic.Azure.WebSites",
+                  "type": "siteextensions",
+                  "dependsOn": [
+                    "[resourceId('Microsoft.Web/sites/slots', variables('AppWSName'), 'Staging')]"
+                  ],
+                  "properties": {
+                  }
+                },
+                {
+                  "name": "appsettings",
+                  "type": "config",
+                  "apiVersion": "2015-08-01",
+                  "dependsOn": [
+                    "[resourceId('Microsoft.Web/sites/slots', variables('AppWSName'), 'Staging')]",
+                    "NewRelic.Azure.WebSites"
+                  ],
+                  "tags": {
+                    "Name": "appsettings"
+                  },
+                  "properties": {
+                    "COR_ENABLE_PROFILING": "1",
+                    "COR_PROFILER": "{71DA0A04-7777-4EC6-9643-7D28B46A8A41}",
+                    "COR_PROFILER_PATH": "D:\\Home\\site\\wwwroot\\newrelic\\NewRelic.Profiler.dll",
+                    "NEWRELIC_HOME": "D:\\Home\\site\\wwwroot\\newrelic",
+                    "NEW_RELIC_LICENSE_KEY": "[parameters('NewRelicLicenseKey')]"
+                  }
+                }
+              ],
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('AppWSName'))]",
+                "[resourceId('Microsoft.Web/serverfarms', variables('ASPName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Web/sites/slots/config",
+              "name": "[concat(variables('AppWSName'), '/', 'staging', '/' , 'web')]",
+              "apiVersion": "2016-08-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "defaultDocuments": [
+                  "Default.html",
+                  "index.html",
+                  "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v4.6",
+                "phpVersion": "",
+                "pythonVersion": "",
+                "nodeVersion": "",
+                "remoteDebuggingEnabled": false,
+                "use32BitWorkerProcess": false,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "virtualApplications": [
+                  {
+                    "virtualPath": "/",
+                    "physicalPath": "site\\wwwroot\\httpdocs\\",
+                    "preloadEnabled": false
+                  }
+                ],
+                "managedPipelineMode": "Integrated"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', variables('AppWSName'))]",
+                "[resourceId('Microsoft.Web/sites/slots', variables('AppWSName'), 'Staging')]"
+              ]
+            }
   ],
   "outputs": {
-    "CustomProdUrl": {
-      "type": "string",
-      "value": "[concat( variables('CustomURL'), '.lab-bjss.com')]"
-    },
-    "ProdUrl": {
-      "type": "string",
-      "value": "[concat( variables('AppWSName'), '.azurewebsites.net')]"
-    },
-    "StagingUrl": {
-      "type": "string",
-      "value": "[concat( variables('AppWSName'),'-staging.azurewebsites.net')]"
-    },
-    "ASPName": {
-      "type": "string",
-      "value": "[variables('ASPName')]"
-    },
-    "AppWSName": {
-      "type": "string",
-      "value": "[ variables('AppWSName')]"
-    },
-    "StagingSlotAppWSName": {
-      "type": "string",
-      "value": "[concat(variables('AppWSName'), '/Staging')]"
-    }
-  }
-} 
+        "CustomProdUrl": {
+          "type": "string",
+          "value": "[concat( variables('CustomURL'), '.lab-bjss.com')]"
+        },
+        "ProdUrl": {
+          "type": "string",
+          "value": "[concat( variables('AppWSName'), '.azurewebsites.net')]"
+        },
+        "StagingUrl": {
+          "type": "string",
+          "value": "[concat( variables('AppWSName'),'-staging.azurewebsites.net')]"
+        },
+        "ASPName": {
+          "type": "string",
+          "value": "[variables('ASPName')]"
+        },
+        "AppWSName": {
+          "type": "string",
+          "value": "[ variables('AppWSName')]"
+        },
+        "StagingSlotAppWSName": {
+          "type": "string",
+          "value": "[concat(variables('AppWSName'), '/Staging')]"
+        }
+      }
+    } 

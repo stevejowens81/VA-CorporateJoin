@@ -1,5 +1,43 @@
 # Requires -Version 3.0
+# Content Version : 2018.02.08.001
+# Creator - Steve Owens
+<#
+ .SYNOPSIS
+    Deploy an Azure App Service
 
+ .DESCRIPTION
+    Deploys an Azure Resource Manager template to as an Azure App Service.
+    The Powershell script and supporting ARM Template and ARM Template Parameter files must be located within the same directory.
+    The run the process you must use the following command and implement the parameters based on the information below.
+    
+    ./Deploy-VA-corporatejoin.ps1 
+
+ .PARAMETER EnvName
+    The enviroment name must only be DEV, UAT or PRD.
+
+ .PARAMETER AppName
+    Name of the Application to be deployed (No Spaces Allowed, please use (-) inplace of a space.
+
+ .PARAMETER AppReleaseId
+    The release version number - Rxxx.
+
+ .PARAMETER Location
+
+    The Microsoft Azure region to deploy the solution to - i.e WESTEUROPE.
+
+ .PARAMETER ResourceGroupName
+
+    A variable name made up of input parameters.
+
+ .PARAMETER deploymentName
+    The deployment name.
+
+ .PARAMETER templateFilePath
+    Optional, path to the template file. Defaults to template.json.
+
+ .PARAMETER parametersFilePath
+    Optional, path to the parameters file. Defaults to parameters.json. If file is not found, will prompt for parameter values based on template.
+#>
 Param(
 	[string] [Parameter(Mandatory=$true)] $EnvName,
 	[string] [Parameter(Mandatory=$true)] $AppName,
