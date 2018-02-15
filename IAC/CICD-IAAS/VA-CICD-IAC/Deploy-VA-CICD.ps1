@@ -1,5 +1,5 @@
 # Requires -Version 3.0
-# Content Version : 2018.02.08.001
+# Content Version : 2018.02.15.001
 # Creator - Steve Owens
 <#
  .SYNOPSIS
@@ -49,7 +49,6 @@
 Param(
 	[string] [Parameter(Mandatory=$true)] $EnvName,
 	[string] [Parameter(Mandatory=$true)] $AppName,
-	[string] [Parameter(Mandatory=$true)] $AppReleaseId,
     [string] [Parameter(Mandatory=$true)] $Location,
 	[string] [Parameter(Mandatory=$true)] $adminUsername,
 	[string] [Parameter(Mandatory=$true)] $adminPassword,
@@ -62,6 +61,9 @@ Param(
 try {
     [Microsoft.Azure.Common.Authentication.AzureSession]::ClientFactory.AddUserAgent("VSAzureTools-$UI$($host.name)".replace(' ','_'), '3.0.0')
 } catch { }
+
+#Convert Password to Secure String
+$SecurePassword = $adminPassword | ConvertTo-SecureString -AsPlainText -Force 
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version 3
@@ -86,9 +88,8 @@ if ($ValidateOnly) {
                                                                                   -TemplateParameterFile $TemplateParametersFile `
 																				  -EnvName $EnvName `
 																				  -AppName $AppName `
-																				  -AppReleaseId $AppReleaseId `
 																				  -adminUsername $adminUsername `
-																				  -adminPassword $adminPassword `
+																				  -adminPassword $SecurePassword `
                                                                                   @OptionalParameters)
     if ($ErrorMessages) {
         Write-Output '', 'Validation returned the following errors:', @($ErrorMessages), '', 'Template is invalid.'
@@ -104,9 +105,8 @@ else {
                                        -TemplateParameterFile $TemplateParametersFile `
 									   -EnvName $EnvName `
 									   -AppName $AppName `
-									   -AppReleaseId $AppReleaseId `
 									   -adminUsername $adminUsername `
-									   -adminPassword $adminPassword `
+									   -adminPassword $SecurePassword `
                                        @OptionalParameters `
                                        -Force -Verbose `
                                        -ErrorVariable ErrorMessages

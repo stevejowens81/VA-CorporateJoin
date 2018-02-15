@@ -17,23 +17,71 @@
         "description": "Name of the Application to be deployed (No Spaces Allowed, please use (-) inplace of a space."
       }
     },
+    "NewRelicLicenseKey": {
+      "type": "string"
+    },
     "adminUsername": {
       "type": "string"
     },
     "adminPassword": {
       "type": "securestring"
+    },
+    "P-VnetCIDR": {
+      "type": "string"
+    },
+    "P-Sub1NetworkaAddr": {
+      "type": "string"
+    },
+    "P-Sub2NetworkaAddr": {
+      "type": "string"
+    },
+    "P-SourceIPAdrs": {
+      "type": "string"
+    },
+    "P-VM1Name": {
+      "type": "string"
+    },
+    "P-virtualMachineSize1": {
+      "type": "string"
+    },
+    "P-VM2Name": {
+      "type": "string"
+    },
+    "P-virtualMachineSize2": {
+      "type": "string"
+    },
+    "P-StorAccName": {
+      "type": "string"
+    },
+    "P-DiagStorAccName": {
+      "type": "string"
+    },
+    "P-BashScriptsBaseURL": {
+      "type": "string"
+    },
+    "P-JenkinsInstall": {
+      "type": "string"
+    },
+    "P-JenkinsDeploy": {
+      "type": "string"
+    },
+    "P-JenkinsRestore": {
+      "type": "string"
+    },
+    "P-JenkinsBackup": {
+      "type": "string"
     }
   },
   "variables": {
     "RGName": "[resourceGroup().name]",
     "Vnet": "[concat(parameters('EnvName'),'-',parameters('AppName'),'-CICD-VNET')]",
-    "VnetCIDR": "10.100.1.0/24",
+    "VnetCIDR": "[parameters('P-VnetCIDR')]",
     "Sub1Name": "[concat(parameters('EnvName'),'-',parameters('AppName'),'-CICD-DMZ-SUBNET')]",
-    "Sub1NetworkaAddr": "10.100.1.0/25",
+    "Sub1NetworkaAddr": "[parameters('P-Sub1NetworkaAddr')]",
     "Sub2Name": "[concat(parameters('EnvName'),'-',parameters('AppName'),'-CICD-APP-SUBNET')]",
-    "Sub2NetworkaAddr": "10.100.1.128/25",
+    "Sub2NetworkaAddr": "[parameters('P-Sub2NetworkaAddr')]",
     "DmzNSG": "[concat(parameters('EnvName'),'-',parameters('AppName'),'-CICD-DMZ-NSG')]",
-    "SourceIPAdrs": "77.86.30.4/32",
+    "SourceIPAdrs": "[parameters('P-SourceIPAdrs')]",
     "AvailabiltySet1": "[concat(parameters('EnvName'),'-',parameters('AppName'),'-CICD-RDP-AVS')]",
     "AvailabiltySet2": "[concat(parameters('EnvName'),'-',parameters('AppName'),'-CICD-JENKINS-AVS')]",
     "vnetID": "[resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks', variables('Vnet'))]",
@@ -41,25 +89,26 @@
     "subnet2Ref": "[concat(variables('vnetID'),'/subnets/', variables('Sub2Name'))]",
     "diagnosticsExtensionName": "IaaSDiagnostics",
     "PIP1Name": "[concat(variables('VM1Name'), '-ip')]",
-    "VM1Name": "mancjrdpvm01",
+    "VM1Name": "[parameters('P-VM1Name')]",
     "NIC1Name": "[concat(variables('VM1Name'), '-nic')]",
-    "virtualMachineSize1": "Standard_D2s_v3",
+    "virtualMachineSize1": "[parameters('P-virtualMachineSize1')]",
     "OSDiskExt": "-2018os.vhd",
-    "VM2Name": "mancjjnkvm01",
+    "VM2Name": "[parameters('P-VM2Name')]",
     "NIC2Name": "[concat(variables('VM2Name'), '-nic')]",
-    "virtualMachineSize2": "Standard_D2s_v3",
+    "virtualMachineSize2": "[parameters('P-virtualMachineSize2')]",
     "VM1OSDisk1": "[concat(variables('VM2Name'), '2018os.vhd')]",
-    "StorAccName": "mancjcicd2018sa",
-    "DiagStorAccName": "mancjcicd2018diagsa",
+    "StorAccName": "[parameters('P-StorAccName')]",
+    "DiagStorAccName": "[parameters('P-DiagStorAccName')]",
     "metricsresourceid": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/', 'Microsoft.Compute/virtualMachines/', variables('VM2Name'))]",
     "metricsclosing": "[concat('<Metrics resourceId=\"', variables('metricsresourceid'), '\"><MetricAggregation scheduledTransferPeriod=\"PT1H\"/><MetricAggregation scheduledTransferPeriod=\"PT1M\"/></Metrics></DiagnosticMonitorConfiguration></WadCfg>')]",
     "metricscounters": "<PerformanceCounters scheduledTransferPeriod=\"PT1M\"><PerformanceCounterConfiguration counterSpecifier=\"\\Memory\\AvailableMemory\" sampleRate=\"PT15S\" unit=\"Bytes\"><annotation displayName=\"Memory available\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Memory\\PercentAvailableMemory\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"Mem. percent available\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Memory\\UsedMemory\" sampleRate=\"PT15S\" unit=\"Bytes\"><annotation displayName=\"Memory used\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Memory\\PercentUsedMemory\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"Memory percentage\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Memory\\PercentUsedByCache\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"Mem. used by cache\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Memory\\PagesPerSec\" sampleRate=\"PT15S\" unit=\"CountPerSecond\"><annotation displayName=\"Pages\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Memory\\PagesReadPerSec\" sampleRate=\"PT15S\" unit=\"CountPerSecond\"><annotation displayName=\"Page reads\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Memory\\PagesWrittenPerSec\" sampleRate=\"PT15S\" unit=\"CountPerSecond\"><annotation displayName=\"Page writes\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Memory\\AvailableSwap\" sampleRate=\"PT15S\" unit=\"Bytes\"><annotation displayName=\"Swap available\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Memory\\PercentAvailableSwap\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"Swap percent available\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Memory\\UsedSwap\" sampleRate=\"PT15S\" unit=\"Bytes\"><annotation displayName=\"Swap used\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Memory\\PercentUsedSwap\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"Swap percent used\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Processor\\PercentIdleTime\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"CPU idle time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Processor\\PercentUserTime\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"CPU user time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Processor\\PercentNiceTime\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"CPU nice time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Processor\\PercentPrivilegedTime\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"CPU privileged time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Processor\\PercentInterruptTime\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"CPU interrupt time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Processor\\PercentDPCTime\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"CPU DPC time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Processor\\PercentProcessorTime\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"CPU percentage guest OS\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\Processor\\PercentIOWaitTime\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"CPU IO wait time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk\\BytesPerSecond\" sampleRate=\"PT15S\" unit=\"BytesPerSecond\"><annotation displayName=\"Disk total bytes\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk\\ReadBytesPerSecond\" sampleRate=\"PT15S\" unit=\"BytesPerSecond\"><annotation displayName=\"Disk read guest OS\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk\\WriteBytesPerSecond\" sampleRate=\"PT15S\" unit=\"BytesPerSecond\"><annotation displayName=\"Disk write guest OS\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk\\TransfersPerSecond\" sampleRate=\"PT15S\" unit=\"CountPerSecond\"><annotation displayName=\"Disk transfers\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk\\ReadsPerSecond\" sampleRate=\"PT15S\" unit=\"CountPerSecond\"><annotation displayName=\"Disk reads\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk\\WritesPerSecond\" sampleRate=\"PT15S\" unit=\"CountPerSecond\"><annotation displayName=\"Disk writes\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk\\AverageReadTime\" sampleRate=\"PT15S\" unit=\"Seconds\"><annotation displayName=\"Disk read time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk\\AverageWriteTime\" sampleRate=\"PT15S\" unit=\"Seconds\"><annotation displayName=\"Disk write time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk\\AverageTransferTime\" sampleRate=\"PT15S\" unit=\"Seconds\"><annotation displayName=\"Disk transfer time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk\\AverageDiskQueueLength\" sampleRate=\"PT15S\" unit=\"Count\"><annotation displayName=\"Disk queue length\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\NetworkInterface\\BytesTransmitted\" sampleRate=\"PT15S\" unit=\"Bytes\"><annotation displayName=\"Network out guest OS\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\NetworkInterface\\BytesReceived\" sampleRate=\"PT15S\" unit=\"Bytes\"><annotation displayName=\"Network in guest OS\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\NetworkInterface\\PacketsTransmitted\" sampleRate=\"PT15S\" unit=\"Count\"><annotation displayName=\"Packets sent\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\NetworkInterface\\PacketsReceived\" sampleRate=\"PT15S\" unit=\"Count\"><annotation displayName=\"Packets received\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\NetworkInterface\\BytesTotal\" sampleRate=\"PT15S\" unit=\"Bytes\"><annotation displayName=\"Network total bytes\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\NetworkInterface\\TotalRxErrors\" sampleRate=\"PT15S\" unit=\"Count\"><annotation displayName=\"Packets received errors\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\NetworkInterface\\TotalTxErrors\" sampleRate=\"PT15S\" unit=\"Count\"><annotation displayName=\"Packets sent errors\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\NetworkInterface\\TotalCollisions\" sampleRate=\"PT15S\" unit=\"Count\"><annotation displayName=\"Network collisions\" locale=\"en-us\"/></PerformanceCounterConfiguration></PerformanceCounters>",
     "metricsstart": "<WadCfg><DiagnosticMonitorConfiguration overallQuotaInMB=\"4096\"><DiagnosticInfrastructureLogs scheduledTransferPeriod=\"PT1M\" scheduledTransferLogLevelFilter=\"Warning\"/>",
     "wadcfgx": "[concat(variables('metricsstart'), variables('metricscounters'), variables('metricsclosing'))]",
-    "BashScriptsBaseURL": "https://raw.githubusercontent.com/stevejowens81/VA-CorporateJoin/master/IAC/CICD-IAAS/VA-CICD-IAC/",
-    "JenkinsInstall": "jenkins_install.sh",
-    "JenkinsRestore": "jenkins_restore.sh",
-    "JenkinsBackup": "jenkins_backup.sh"
+    "BashScriptsBaseURL": "[parameters('P-BashScriptsBaseURL')]",
+    "JenkinsInstall": "[parameters('P-JenkinsInstall')]",
+    "JenkinsDeploy": "[parameters('P-JenkinsDeploy')]",
+    "JenkinsRestore": "[parameters('P-JenkinsRestore')]",
+    "JenkinsBackup": "[parameters('P-JenkinsBackup')]"
   },
   "resources": [
     {
@@ -234,7 +283,8 @@
         ]
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses', variables('PIP1Name'))]"
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('PIP1Name'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('Vnet'))]"
       ]
     },
     {
@@ -247,6 +297,9 @@
         "Enviroment": "[parameters('EnvName')]",
         "Application": "[concat(parameters('AppName'),'-CICD')]"
       },
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('Vnet'))]"
+      ],
       "properties": {
         "ipConfigurations": [
           {
@@ -673,75 +726,6 @@
           "storageAccountName": "[variables('DiagStorAccName')]",
           "storageAccountKey": "[Concat('DefaultEndpointsProtocol=https;AccountName=',variables('DiagStorAccName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('DiagStorAccName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
           "storageAccountEndPoint": "https://core.windows.net/"
-        }
-      }
-    },
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('VM2Name'),'/', 'Custom.Script.Jenkins.Intall')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('VM2Name')]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Compute",
-        "type": "CustomScriptExtension",
-        "typeHandlerVersion": "1.9",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "fileUris": [
-            "[concat(variables('BashScriptsBaseURL'),variables('JenkinsInstall'))]"
-          ]
-        },
-        "protectedSettings": {
-          "commandToExecute": "[concat('sh ',variables('JenkinsInstall'))]"
-        }
-      }
-    },
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('VM2Name'),'/', 'Custom.Script.Jenkins.Restore')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('VM2Name')]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Compute",
-        "type": "CustomScriptExtension",
-        "typeHandlerVersion": "1.9",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "fileUris": [
-            "[concat(variables('BashScriptsBaseURL'),variables('JenkinsRestore'))]"
-          ]
-        },
-        "protectedSettings": {
-          "commandToExecute": "[concat('sh ',variables('JenkinsRestore'))]"
-        }
-      }
-    },
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('VM2Name'),'/', 'Custom.Script.Jenkins.Backup')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('VM2Name')]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Compute",
-        "type": "CustomScriptExtension",
-        "typeHandlerVersion": "1.9",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "fileUris": [
-            "[concat(variables('BashScriptsBaseURL'),variables('JenkinsBackup'))]"
-          ]
-        },
-        "protectedSettings": {
-          "commandToExecute": "[concat('sh ',variables('JenkinsBackup'))]"
         }
       }
     }

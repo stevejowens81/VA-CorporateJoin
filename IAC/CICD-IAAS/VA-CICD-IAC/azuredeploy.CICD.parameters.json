@@ -33,7 +33,7 @@
       "value": "Standard_D2s_v3"
     },
     "P-VM2Name": {
-      "mancjjnkvm01"
+      "value": "mancjjnkvm01"
     },
     "P-virtualMachineSize2": {
       "value": "Standard_D2s_v3"
@@ -45,10 +45,13 @@
       "value": "mancjcicd2018diagsa"
     },
     "P-BashScriptsBaseURL": {
-      "value": "https://raw.githubusercontent.com/stevejowens81/VA-CorporateJoin/master/IAC/CICD-IAAS/VA-CICD-IAC/"
+      "value": "HTTP://"
     },
     "P-JenkinsInstall": {
       "value": "jenkins_install.sh"
+    },
+    "P-JenkinsDeploy": {
+      "value": "jenkins_deploy.sh"
     },
     "P-JenkinsRestore": {
       "value": "jenkins_restore.sh"
@@ -57,4 +60,6 @@
       "value": "jenkins_backup.sh"
     }
   }
-} 
+}
+
+
