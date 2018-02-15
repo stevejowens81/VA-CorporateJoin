@@ -6,13 +6,55 @@
       "value": "MAN"
     },
     "AppName": {
-      "value": "APP1"
+      "value": "CORPORATEJOIN"
     },
     "adminUsername": {
       "value": "localadmin"
     },
     "NewRelicLicenseKey": {
       "value": "0123456789"
+    },
+    "P-VnetCIDR": {
+      "value": "10.100.1.0/24"
+    },
+    "P-Sub1NetworkaAddr": {
+      "value": "10.100.1.0/25"
+    },
+    "P-Sub2NetworkaAddr": {
+      "value": "10.100.1.128/25"
+    },
+    "P-SourceIPAdrs": {
+      "value": "77.86.30.4/32"
+    },
+    "P-VM1Name": {
+      "value": "mancjrdpvm01"
+    },
+    "P-virtualMachineSize1": {
+      "value": "Standard_D2s_v3"
+    },
+    "P-VM2Name": {
+      "mancjjnkvm01"
+    },
+    "P-virtualMachineSize2": {
+      "value": "Standard_D2s_v3"
+    },
+    "P-StorAccName": {
+      "value": "mancjcicd2018sa"
+    },
+    "P-DiagStorAccName": {
+      "value": "mancjcicd2018diagsa"
+    },
+    "P-BashScriptsBaseURL": {
+      "value": "https://raw.githubusercontent.com/stevejowens81/VA-CorporateJoin/master/IAC/CICD-IAAS/VA-CICD-IAC/"
+    },
+    "P-JenkinsInstall": {
+      "value": "jenkins_install.sh"
+    },
+    "P-JenkinsRestore": {
+      "value": "jenkins_restore.sh"
+    },
+    "P-JenkinsBackup": {
+      "value": "jenkins_backup.sh"
     }
   }
-}
+} 
