@@ -763,12 +763,12 @@
       "type": "string",
       "value": "[parameters('adminUsername')]"
     },
-    "WinRDS-IPcfg": {
-      "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('NIC1Name')),'2016-09-01')]",
+    "WinRDS-PIP": {
+      "value": "[reference(resourceId('Microsoft.Network/publicIpAddresses', variables('PIP1Name')),'2015-06-15')]",
       "type": "object"
     },
     "LinuxJenkins-IPcfg": {
-      "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('NIC1Name')),'2016-09-01')]",
+      "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('NIC2Name')),'2016-09-01')]",
       "type": "object"
     }
   }
