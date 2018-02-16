@@ -48,7 +48,7 @@
       "value": "https://raw.githubusercontent.com/stevejowens81/VA-CorporateJoin/master/IAC/CICD-IAAS/VA-CICD-IAC/scripts/"
     },
     "P-JenkinsInstall": {
-      "value": "jenkins_install.sh"
+      "value": "jenkins-install.sh"
     },
     "P-JenkinsDeploy": {
       "value": "jenkins-deploy.sh"
@@ -60,7 +60,7 @@
       "value": "jenkins-backup.sh"
     },
     "P-PuttyInstall": {
-      "value": "Putty_Install.ps1"
+      "value": "Putty-Install.ps1"
     }
   }
 }
