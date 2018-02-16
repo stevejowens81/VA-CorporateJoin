@@ -762,6 +762,14 @@
     "adminUsername": {
       "type": "string",
       "value": "[parameters('adminUsername')]"
+    },
+    "WinRDS-IPcfg": {
+      "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('NIC1Name')),'2016-09-01')]",
+      "type": "object"
+    },
+    "LinuxJenkins-IPcfg": {
+      "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('NIC1Name')),'2016-09-01')]",
+      "type": "object"
     }
   }
 }
