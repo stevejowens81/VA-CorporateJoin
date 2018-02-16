@@ -45,7 +45,7 @@
       "value": "mancjcicd2018diagsa"
     },
     "P-ScriptsBaseURL": {
-      "value": "https://github.com/stevejowens81/VA-CorporateJoin/tree/master/IAC/CICD-IAAS/VA-CICD-IAC/scripts/"
+      "value": "https://raw.githubusercontent.com/stevejowens81/VA-CorporateJoin/master/IAC/CICD-IAAS/VA-CICD-IAC/scripts/"
     },
     "P-JenkinsInstall": {
       "value": "jenkins_install.sh"

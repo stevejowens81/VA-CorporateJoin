@@ -18,7 +18,7 @@
 #>
 
 #Download and Install the Update-OneGet Powershell Module
-icm $executioncontext.InvokeCommand.NewScriptBlock((New-Object Net.WebClient).DownloadString('/Update-OneGet.ps1')) -ArgumentList $home\Documents\WindowsPowerShellModules\OneGet
+icm $executioncontext.InvokeCommand.NewScriptBlock((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/stevejowens81/VA-CorporateJoin/master/IAC/CICD-IAAS/VA-CICD-IAC/scripts/update-OneGet.ps1')) -ArgumentList $home\Documents\WindowsPowerShellModules\OneGet
 Import-Module $home\Documents\WindowsPowerShellModules\OneGet\OneGet.psd1
 
 #Find and Install Putty
