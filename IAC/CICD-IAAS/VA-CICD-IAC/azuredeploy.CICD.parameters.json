@@ -44,22 +44,24 @@
     "P-DiagStorAccName": {
       "value": "mancjcicd2018diagsa"
     },
-    "P-BashScriptsBaseURL": {
-      "value": "HTTP://"
+    "P-ScriptsBaseURL": {
+      "value": "https://github.com/stevejowens81/VA-CorporateJoin/tree/master/IAC/CICD-IAAS/VA-CICD-IAC/scripts/"
     },
     "P-JenkinsInstall": {
       "value": "jenkins_install.sh"
     },
     "P-JenkinsDeploy": {
-      "value": "jenkins_deploy.sh"
+      "value": "jenkins-deploy.sh"
     },
     "P-JenkinsRestore": {
-      "value": "jenkins_restore.sh"
+      "value": "jenkins-restore.sh"
     },
     "P-JenkinsBackup": {
-      "value": "jenkins_backup.sh"
+      "value": "jenkins-backup.sh"
+    },
+    "P-PuttyInstall": {
+      "value": "Putty_Install.ps1"
     }
   }
-}
 
 
